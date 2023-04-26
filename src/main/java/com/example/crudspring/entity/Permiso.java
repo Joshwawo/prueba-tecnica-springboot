@@ -17,11 +17,11 @@ public class Permiso {
     private Integer idPermiso;
 
     @ManyToOne
-    @JoinColumn(name = "idDocente")
+    @JoinColumn(name = "idDocente", nullable = false)
     private Docente docente;
 
     @ManyToOne
-    @JoinColumn(name = "idEstudiante")
+    @JoinColumn(name = "idEstudiante", nullable = false)
     private Estudiante estudiante;
 
     private boolean editar;

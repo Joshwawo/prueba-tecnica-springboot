@@ -6,11 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
+    public Long limpiarId(String id){
+        //limpiar la cadena de entrada y dejar solo los digitos
+        String idLimpio = id.replaceAll("[^\\d]", "");
+        //convertir la cadena de entrada a un long
+        return Long.parseLong(idLimpio);
+    }
 
      //Metodo para obtener todos los cursos
     public List<Curso> getCursos(){
@@ -18,9 +25,12 @@ public class CursoService {
     }
 
     //Metodo para obtener un curso por id
-    public Curso getCurso(Long id){
-        return cursoRepository.findById(id).orElse(null);
+    public Curso getCurso(String id){
+        //Limpiaamos el id
+        Long longId = limpiarId(id);
+        return cursoRepository.findById(longId).orElse(null);
     }
+
 
     //Metodo para guardar el curso
     public Curso guardarCurso(Curso curso){
@@ -28,13 +38,23 @@ public class CursoService {
     }
 
     //Metodo para actualizar el curso
-    public Curso actualizarCurso(Curso curso){
-        return cursoRepository.save(curso);
+    public Optional<Curso> actualizarCurso(Curso curso, Long id){
+        Optional<Curso> cursoBuscado = cursoRepository.findById(id);
+        if(cursoBuscado.isPresent()){
+            Curso _curso = cursoBuscado.get();
+            _curso.setNombre(curso.getNombre());
+            _curso.setDescripcion(curso.getDescripcion());
+            cursoRepository.save(_curso);
+        }
+        return cursoBuscado;
     }
 
     //Metodo para eliminar el curso
-    public String eliminarCurso(Long id){
-        cursoRepository.deleteById(id);
-        return "Curso eliminado correctamente";
+    public void eliminarCurso(String id){
+
+        //Limpiaamos el id
+        Long longId = limpiarId(id);
+
+        cursoRepository.deleteById(longId);
     }
 }

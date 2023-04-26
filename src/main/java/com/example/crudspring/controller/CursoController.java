@@ -2,13 +2,15 @@ package com.example.crudspring.controller;
 
 import com.example.crudspring.entity.Curso;
 import com.example.crudspring.service.CursoService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/cursos")
@@ -22,35 +24,43 @@ public class CursoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Curso> getCursoPorId(@PathVariable("id") Long id){
+    public ResponseEntity<?> getCursoPorId(@PathVariable("id") String id){
       Curso curso = cursoService.getCurso(id);
       if(curso != null){
           return new ResponseEntity<>(curso, HttpStatus.OK);
       }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+           Map<String, String> response = Map.of("message", "Curso no encontrado", "status", "404");
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
       }
     }
 
     @PostMapping("")
-    public ResponseEntity<Curso> crearCurso(@RequestBody Curso curso){
-        Curso cursoCreado = cursoService.guardarCurso(curso);
-        return new ResponseEntity<>(cursoCreado, HttpStatus.CREATED);
+    public ResponseEntity<?> crearCurso(@RequestBody Curso curso){
+        try{
+            Curso cursoCreado = cursoService.guardarCurso(curso);
+            return new ResponseEntity<>(cursoCreado, HttpStatus.CREATED);
+
+        }catch (DataIntegrityViolationException error){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getRootCause());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Curso> actualizarCurso(@PathVariable("id") Long id, @RequestBody Curso curso){
-        Curso cursoActualizado = cursoService.actualizarCurso(curso);
+    public ResponseEntity<?> actualizarCurso(@PathVariable("id") Long id, @RequestBody Curso curso){
+        Optional<Curso> cursoActualizado = cursoService.actualizarCurso(curso, id);
         return new ResponseEntity<>(cursoActualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> eliminarCurso(@PathVariable("id") Long id){
+    public ResponseEntity<Map<String,String>> eliminarCurso(@PathVariable("id") String id){
         Curso curso = cursoService.getCurso(id);
         if(curso != null){
             cursoService.eliminarCurso(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            Map<String, String> response = Map.of("message", "Curso eliminado", "status", "200");
+            return new ResponseEntity<>(response,HttpStatus.OK);
         }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Map<String, String> response = Map.of("message", "Curso no encontrado", "status", "404");
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
     }
 }

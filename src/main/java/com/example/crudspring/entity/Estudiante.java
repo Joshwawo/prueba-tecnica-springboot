@@ -17,11 +17,14 @@ public class Estudiante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEstudiante;
+    @Column(nullable = false)
     private String nombre;
+    @Column(nullable = false)
     private String apellido;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String usuario;
+    @Column(nullable = false)
     private String contrasena;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String correo;
 }

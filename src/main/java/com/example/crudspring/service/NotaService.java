@@ -57,6 +57,20 @@ public class NotaService {
     }
 
     //Metodo para obtener todas las notas por curso
+    public List<Nota> obtenerNotasPorCurso(Long idCurso) throws ChangeSetPersister.NotFoundException {
+        Curso curso = cursoRepository.findById(idCurso)
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        return notaRepository.findByCurso(curso);
+    }
+
+    //Metodo para obtener todas las notas por estudiante
+    public List<Nota> obtenerNotasPorEstudiante(Long idEstudiante) throws ChangeSetPersister.NotFoundException {
+        Estudiante estudiante = estudianteRepository.findById(idEstudiante)
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        return notaRepository.findByEstudiante(estudiante);
+    }
+
+    //Metodo para obtener todas las notas por curso
     /*
     public List<Nota> obtenerNotasPorCurso(Long idCurso) throws ChangeSetPersister.NotFoundException {
         Curso curso = cursoRepository.findById(idCurso)

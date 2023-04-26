@@ -15,10 +15,10 @@ public class Matriculacion {
     private Integer idMatriculacion;
 
     @ManyToOne
-    @JoinColumn(name = "idEstudiante")
+    @JoinColumn(name = "idEstudiante", nullable = false)
     private Estudiante estudiante;
 
     @ManyToOne
-    @JoinColumn(name = "idCurso")
+    @JoinColumn(name = "idCurso", nullable = false)
     private Curso curso;
 }

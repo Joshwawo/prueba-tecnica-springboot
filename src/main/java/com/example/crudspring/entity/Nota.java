@@ -24,12 +24,16 @@ public class Nota {
     private Integer idNota;
 
     @ManyToOne
-    @JoinColumn(name = "idEstudiante")
+    @JoinColumn(name = "idEstudiante", nullable = false)
     private Estudiante estudiante;
 
     @ManyToOne
-    @JoinColumn(name = "idCurso")
+    @JoinColumn(name = "idCurso",nullable = false)
     private Curso curso;
 
     private BigDecimal nota;
+    private BigDecimal califPractica;
+    private BigDecimal califParcial;
+    private BigDecimal califExamen;
+    private BigDecimal califFinal;
 }

@@ -14,4 +14,7 @@ import java.util.List;
 public interface NotaRepository extends JpaRepository<Nota, Long> {
     @EntityGraph(value = "Nota.estudiante")
     List<Nota> findAll();
+
+    List<Nota> findByCurso(Curso curso);
+    List<Nota> findByEstudiante(Estudiante estudiante);
 }
