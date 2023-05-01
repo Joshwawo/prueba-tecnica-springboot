@@ -3,15 +3,14 @@ package com.example.crudspring.service;
 import com.example.crudspring.entity.Curso;
 import com.example.crudspring.entity.Estudiante;
 import com.example.crudspring.entity.Inscripciones;
+import com.example.crudspring.errorHandler.ErrorHandInscripcion;
 import com.example.crudspring.repository.CursoRepository;
 import com.example.crudspring.repository.EstudianteRepository;
 import com.example.crudspring.repository.InscripcionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class InscripcionesService {
@@ -23,14 +22,20 @@ public class InscripcionesService {
 
     @Autowired
     private CursoRepository cursoRepository;
-    public Inscripciones inscribirEstudianteEnCurso(Long idEstudiante, Long idCurso){
-        System.out.println("id estudiante: " + idEstudiante);
-        System.out.println("id curso: " + idCurso);
-
+    public Inscripciones inscribirEstudianteEnCurso(Long idEstudiante, Long idCurso) throws ErrorHandInscripcion {
         Estudiante estudiante = estudianteRepository.findById(idEstudiante).orElse(null);
         Curso curso = cursoRepository.findById(idCurso).orElse(null);
+
+        Inscripciones inscripcionesExistente = inscripcionRepository.findByEstudianteAndCurso(estudiante, curso);
+
+        //Si ya existe una inscripcion para ese estudiante y ese curso, no se puede volver a inscribir
+        if(inscripcionesExistente != null){
+            throw new ErrorHandInscripcion("Ya existe una inscripcion para ese estudiante y ese curso", 400);
+
+        }
+
         Inscripciones inscripcion = new Inscripciones();
-        if(estudiante != null && curso != null && inscripcion != null){
+        if(estudiante != null && curso != null){
             inscripcion.setEstudiante(estudiante);
             inscripcion.setCurso(curso);
 
@@ -48,7 +53,7 @@ public class InscripcionesService {
         return inscripcionRepository.findByEstudiante(estudiante);
     }
 
-    public List<Inscripciones> obtenerEstudiantePorCurso(Long idCurso){
+    public List<Inscripciones> obtenerEstudiantesInscritos(Long idCurso){
         Curso curso = cursoRepository.findById(idCurso).orElse(null);
         return inscripcionRepository.findByCurso(curso);
     }
@@ -72,5 +77,14 @@ public class InscripcionesService {
         }
 
         return null;
+    }
+
+    public Optional<?> obtenerDatosCompletosEstudiante(Long idEstudiante){
+        List<Inscripciones> estudiantes = obtenerCursoPorEstudiante(idEstudiante);
+
+
+
+
+        return Optional.ofNullable(estudiantes);
     }
 }

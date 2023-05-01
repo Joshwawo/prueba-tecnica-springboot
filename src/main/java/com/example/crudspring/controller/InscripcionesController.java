@@ -1,7 +1,7 @@
 package com.example.crudspring.controller;
 
-import com.example.crudspring.entity.Estudiante;
 import com.example.crudspring.entity.Inscripciones;
+import com.example.crudspring.errorHandler.ErrorHandInscripcion;
 import com.example.crudspring.service.InscripcionesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,12 @@ public class InscripcionesController {
 
      @GetMapping("/curso/{idCurso}")
      public ResponseEntity<?> obtenerEstudiantesPorCurso(@PathVariable Long idCurso){
-         return ResponseEntity.ok(inscripcionesService.obtenerEstudiantePorCurso(idCurso));
+         return ResponseEntity.ok(inscripcionesService.obtenerEstudiantesInscritos(idCurso));
+     }
+
+     @GetMapping("/est/{idEstudiante}")
+     public ResponseEntity<?> obtenerCursosPorEstudiante2(@PathVariable Long idEstudiante){
+         return ResponseEntity.ok(inscripcionesService.obtenerDatosCompletosEstudiante(idEstudiante));
      }
 
     @PostMapping("/alta")
@@ -34,8 +39,8 @@ public class InscripcionesController {
             Inscripciones bodyInscripciones = inscripcionesService.inscribirEstudianteEnCurso(Idestudiante, Idcurso);
             return ResponseEntity.ok(bodyInscripciones);
 
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
+        }catch (ErrorHandInscripcion e){
+            return ResponseEntity.badRequest().body(e.getErrorResponseInscripcion());
 
         }
     }
