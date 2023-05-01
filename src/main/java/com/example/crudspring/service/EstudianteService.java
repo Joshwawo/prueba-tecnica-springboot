@@ -24,6 +24,11 @@ public class EstudianteService {
         return estudianteRepository.findById(id).orElse(null);
     }
 
+    //Metodo para obtener un estudiate por nombre
+    public Estudiante getEstudianteByNombre(String nombre){
+        return estudianteRepository.findByNombre(nombre);
+    }
+
     //Metodo para guardar el estudiante
     public Estudiante guardarEstudiante(Estudiante estudiante){
         return estudianteRepository.save(estudiante);

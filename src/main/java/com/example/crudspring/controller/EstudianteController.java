@@ -27,6 +27,19 @@ public class EstudianteController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getEstudiantePorId(@PathVariable("id") Long id){
        Estudiante estudiante = estudianteService.getEstudiante(id);
+       System.out.println(estudiante);
+
+       if(estudiante != null){
+           return new ResponseEntity<>(estudiante, HttpStatus.OK);
+       }else {
+           Map<String, String> response = Map.of("message", "Estudiante no encontrado", "status", "404");
+           return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+       }
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<?> getEstudiantePorNombre(@PathVariable("nombre") String nombre){
+       Estudiante estudiante = estudianteService.getEstudianteByNombre(nombre);
 
        if(estudiante != null){
            return new ResponseEntity<>(estudiante, HttpStatus.OK);
@@ -40,6 +53,7 @@ public class EstudianteController {
     public ResponseEntity<?> crearEstudiante(@RequestBody Estudiante estudiante){
        try{
            Estudiante estudianteCreado = estudianteService.guardarEstudiante(estudiante);
+           System.out.println(estudianteCreado);
            return new ResponseEntity<>(estudianteCreado, HttpStatus.CREATED);
        }catch (DataIntegrityViolationException error){
            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getRootCause());

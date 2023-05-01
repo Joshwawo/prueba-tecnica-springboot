@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 )
 
 @Data
+@Table(name = "tbl_nota")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Nota {

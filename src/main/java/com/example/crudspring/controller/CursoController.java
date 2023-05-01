@@ -34,6 +34,17 @@ public class CursoController {
       }
     }
 
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<?> getCursoPorNombre(@PathVariable("nombre") String nombre){
+      Curso curso = cursoService.getCursoPorNombre(nombre);
+      if(curso != null){
+          return new ResponseEntity<>(curso, HttpStatus.OK);
+      }else {
+           Map<String, String> response = Map.of("message", "Curso no encontrado", "status", "404");
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+      }
+    }
+
     @PostMapping("")
     public ResponseEntity<?> crearCurso(@RequestBody Curso curso){
         try{
@@ -43,6 +54,13 @@ public class CursoController {
         }catch (DataIntegrityViolationException error){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getRootCause());
         }
+    }
+
+    @PostMapping("/{cursoId}/inscribir/{estudianteId}")
+    public String inscribirEstudianteAlCurso(@PathVariable("estudianteId") Long idEstudiante, @PathVariable("cursoId") Long idCurso){
+
+        cursoService.inscribirEstudianteAlCurso(idEstudiante, idCurso);
+        return "Estudiante inscrito";
     }
 
     @PutMapping("/{id}")

@@ -51,4 +51,9 @@ public class NotaController {
     public List<Nota> getNotasPorEstudiante(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
         return notaService.obtenerNotasPorEstudiante(id);
     }
+
+    @GetMapping("/estudiante/nombre/{nombre}")
+    public List<Nota> getNotasPorEstudianteNombre(@PathVariable String nombre) throws ChangeSetPersister.NotFoundException {
+        return (List<Nota>) notaService.obtenerNotaPorNombreEstudiante(nombre);
+    }
 }

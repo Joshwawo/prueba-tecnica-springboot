@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+
 @Entity
 @Table(name = "tbl_docente", uniqueConstraints = {
         @UniqueConstraint(columnNames = "usuario"),
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class Docente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idEstudiante;
+    private Integer idDocente;
     @Column(nullable = false)
     private String  nombre;
 
@@ -28,24 +29,15 @@ public class Docente {
     private String  usuario;
 
     @Column(nullable = true)
-    @Transient
     private String  contrasena;
-
-    @Column(nullable = false)
-    private String  contrasenaEncriptada;
-
 
     @Column(unique = true, nullable = false)
     private String  correo;
 
-    public void setContrasena(String contrasena) {
+    public void setPassword(String password){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.contrasena = passwordEncoder.encode(contrasena);
+        this.contrasena = passwordEncoder.encode(password);
     }
 
-
-    public void validarContrasena(String contrasena){
-        new BCryptPasswordEncoder().matches(contrasena, this.contrasenaEncriptada);
-    }
 
 }

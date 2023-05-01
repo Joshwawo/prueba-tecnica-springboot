@@ -40,6 +40,11 @@ public class NotaService {
 
     }
 
+    //Metodo para obtener todas las notas por nombre de estudiante
+    public List<Nota> obtenerNotaPorNombreEstudiante(String nombre){
+        return  notaRepository.findAllByEstudiante_Nombre(nombre);
+    }
+
     //Metodo para actualizar una nota
     public Nota actualizarNota(Long idNota, Nota notaActualizada) throws ChangeSetPersister.NotFoundException {
         Nota nota = obtenerNotaPorId(idNota);

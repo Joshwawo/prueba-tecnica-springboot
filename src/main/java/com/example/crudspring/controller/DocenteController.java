@@ -38,11 +38,26 @@ public class DocenteController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<?> getDocentePorNombre(@PathVariable("nombre") String nombre){
+        try{
+            Docente docente = docenteService.getDocentePorUsuario(nombre);
+            if(docente != null){
+                return new ResponseEntity<>(docente, HttpStatus.OK);
+            }else {
+                Map<String, String> erroRes = Map.of("message","No se encontro el docente", "statusCode","404"  );
+                return new ResponseEntity<>(erroRes,HttpStatus.NOT_FOUND);
+            }
+
+        }catch (DataIntegrityViolationException error){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
 
     @PostMapping("")
     public ResponseEntity<?> crearDocente(@RequestBody Docente docente){
         try{
-            Docente docenteCreado = docenteService.guardarDocente(docente);
+            Docente docenteCreado = docenteService.saveDocente(docente);
             return new ResponseEntity<>(docenteCreado, HttpStatus.CREATED);
         }catch (DataIntegrityViolationException error){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
@@ -73,6 +88,19 @@ public class DocenteController {
     }
 
     @PostMapping("/login")
+    public String iniciarSesion(@RequestBody Docente docente){
+        Docente docenteLogueado = docenteService.loginDocente(docente.getUsuario(), docente.getContrasena());
+        if(docenteLogueado != null){
+            return "Bienvenido " + docenteLogueado.getNombre() + " " + docenteLogueado.getApellido();
+        }else {
+            return "Usuario o contraseña incorrectos";
+
+        }
+
+    }
+
+    /*
+    @PostMapping("/login")
     public ResponseEntity<?> loginDocente(@RequestBody Docente docente){
         try{
             Optional<Docente> docenteLogueado = (Optional<Docente>) docenteService.login(docente.getContrasenaEncriptada(), docente.getUsuario());
@@ -87,4 +115,6 @@ public class DocenteController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
     }
+    */
+
 }

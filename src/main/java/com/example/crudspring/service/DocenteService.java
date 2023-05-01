@@ -28,10 +28,34 @@ public class DocenteService {
         Optional<Docente> docenteBuscado = docenteRepository.findById(longId);
         return docenteBuscado.orElse(null);
     }
+    //Metodo para obtener un docente por usuario
+    public Docente getDocentePorUsuario(String nombre){
+        return docenteRepository.findByNombre(nombre);
+    }
 
+    public Docente saveDocente (Docente docente){
+        // Encriptamos la contraseña antes de guardarla en la base de datos
+           BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+           String contrasenaEncriptada = passwordEncoder.encode(docente.getContrasena());
+           docente.setContrasena(contrasenaEncriptada);
+           return docenteRepository.save(docente);
+
+    }
+
+    public Docente loginDocente(String usuario, String contrasena){
+        Docente docente = docenteRepository.findByUsuario(usuario);
+        if(docente != null){
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            if(passwordEncoder.matches(contrasena, docente.getContrasena())){
+                return docente;
+            }
+        }
+        return null;
+    }
 
 
     //Metodo para guardar el docente
+    /*
     public Docente guardarDocente(Docente docente){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String contrasenaEncriptada = passwordEncoder.encode(docente.getContrasena());
@@ -46,6 +70,7 @@ public class DocenteService {
         System.out.println(docente);
         return docente;
     }
+    */
 
     //Metodo para actualizar el docente
     public Optional<Docente> actualizarDocente(Docente docente, Long id){
@@ -84,7 +109,7 @@ public class DocenteService {
 
         return null;
     }
-
+    /*
     public Optional<?> login(String contrasena, String usuario) {
         Docente docente = docenteRepository.findByUsuario(usuario);
         System.out.println(docente);
@@ -103,4 +128,6 @@ public class DocenteService {
         return Optional.empty();
 
     }
+
+     */
 }
